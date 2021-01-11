@@ -16,21 +16,26 @@ function Movie(Title, Year, imdbID){
 
 function Nominations(){
     this.movies = {};
+    this.size = 0;
 }
 
 Nominations.prototype.add = function(movie){
     this.movies[movie.imdbID] = movie;
+    this.size++;
 }
 Nominations.prototype.remove = function(imdbID){
     this.movies[imdbID] = null; // help with Garbage collection?
     delete this.movies[imdbID];
+    this.size--;
+}
+Nominations.prototype.count = function(){
+    return this.size;
 }
 
 // singleton
 const AllNominations = new Nominations();
 
-// &apikey=fdf22c9a
-// http://www.omdbapi.com/?t=home&apikey=fdf22c9a
+// http://www.omdbapi.com/?s=MOVIENAME&apikey=fdf22c9a
 async function fetchMovieFromAPI(movieTitle){
     const apikey = 'fdf22c9a';
     const titleQueryParameter = `s=${movieTitle}`;
@@ -48,7 +53,6 @@ function listMovies(movies){
     const idLookup = {};
 
     for(const movie of movies){
-        console.log(movie);
         /**
          * movie Schema{
          * Title:
@@ -58,26 +62,43 @@ function listMovies(movies){
          * }
          */
 
-        idLookup[movie.imdbID] = new Movie(movie.Title, movie.Year, imovie.imdbID);
+        idLookup[movie.imdbID] = new Movie(movie.Title, movie.Year, movie.imdbID);
 
         searchResultsList.insertAdjacentHTML('afterbegin', 
         `
         <li>
         ${movie.Title} (${movie.Year}) 
-        <button type="button" id = "${movie.imdbID}" class="btn btn-primary"><i class="fas fa-search"></i> Nominate</button>
+        <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary"><i class="fas fa-search"></i> Nominate</button>
         </li>`)
 
-        let btn = document.getElementById(`${movie.imdbID}`);
+        let btn = document.getElementById(`${movie.imdbID}-add`);
         btn.addEventListener("click", () => {
-            let movieToNominate = idLookup[btn.id];
+            let movieToNominate = idLookup[movie.imdbID];
             
-            console.log(AllNominations);
+
+
             AllNominations.add(movieToNominate);
             
+            if(AllNominations.count() === 5) {
+                document.getElementById('nominationsCompleteNotice').show();
+            }
+
             const nominatedMovieList = document.getElementById('nominatedMovieList');
+            nominatedMovieList.innerHTML = '';
             nominatedMovieList.show();
-            nominatedMovieList.insertAdjacentHTML('afterbegin', `<li>${movie.Title} (${movie.Year}) </li>`);
+
+            nominatedMovieList.insertAdjacentHTML('afterbegin', `<li id="${movie.imdbID}" >${movie.Title} (${movie.Year}) </li> 
+            <button type="button" id = "${movie.imdbID}-remove" class="btn btn-primary"><i class="fas fa-trash"></i> Remove</button>
+            `);
             btn.disabled = true;
+
+            let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
+            removeNominationBtn.addEventListener('click', () => {
+                AllNominations.remove(movie.imdbID);
+                nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`));
+                nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`));
+
+            })
         });
     }
 }
@@ -88,6 +109,8 @@ window.onload = function(){
     const alertField = document.getElementById('enterTitleAlert')
     const searchResultsContainer = document.getElementById('searchResultsContainer');
     const spinner = document.getElementById('resultsWaitingSpinner');
+    const modalCloseButton = document.getElementById('modalCloseButton');
+    modalCloseButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
 
     // this is so that we can hide the alert message incase it was previously shown
     // todo: add debounce
