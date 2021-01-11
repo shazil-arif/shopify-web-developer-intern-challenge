@@ -16,7 +16,7 @@ body{
 }
 .parent{
     width:500px;
-    height:500px;
+    height:auto;
 }
 #enterTitleAlert{
     display: none;
