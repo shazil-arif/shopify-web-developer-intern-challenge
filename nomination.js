@@ -8,12 +8,26 @@ HTMLElement.prototype.show = function(){
     this.style.display = 'block'
 }
 
-function Nomination(){
-    this.Title;
-    this.Year;
-    this.Id;
+function Movie(Title, Year, imdbID){
+    this.Title = Title
+    this.Year = Year;
+    this.imdbId = imdbID;
 }
 
+function Nominations(){
+    this.movies = {};
+}
+
+Nominations.prototype.add = function(movie){
+    this.movies[movie.imdbID] = movie;
+}
+Nominations.prototype.remove = function(imdbID){
+    this.movies[imdbID] = null; // help with Garbage collection?
+    delete this.movies[imdbID];
+}
+
+// singleton
+const AllNominations = new Nominations();
 
 // &apikey=fdf22c9a
 // http://www.omdbapi.com/?t=home&apikey=fdf22c9a
@@ -30,16 +44,41 @@ async function fetchMovieFromAPI(movieTitle){
 function listMovies(movies){
     const searchResultsList = document.getElementById('searchResultsList');
     searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
+
+    const idLookup = {};
+
     for(const movie of movies){
         console.log(movie);
         /**
          * movie Schema{
          * Title:
          * Year
-         * IMDBId?
+         * imdbID
+         * Poster
          * }
          */
-        searchResultsList.insertAdjacentHTML('afterend', `<li>${movie.Title}</li>`)
+
+        idLookup[movie.imdbID] = new Movie(movie.Title, movie.Year, imovie.imdbID);
+
+        searchResultsList.insertAdjacentHTML('afterbegin', 
+        `
+        <li>
+        ${movie.Title} (${movie.Year}) 
+        <button type="button" id = "${movie.imdbID}" class="btn btn-primary"><i class="fas fa-search"></i> Nominate</button>
+        </li>`)
+
+        let btn = document.getElementById(`${movie.imdbID}`);
+        btn.addEventListener("click", () => {
+            let movieToNominate = idLookup[btn.id];
+            
+            console.log(AllNominations);
+            AllNominations.add(movieToNominate);
+            
+            const nominatedMovieList = document.getElementById('nominatedMovieList');
+            nominatedMovieList.show();
+            nominatedMovieList.insertAdjacentHTML('afterbegin', `<li>${movie.Title} (${movie.Year}) </li>`);
+            btn.disabled = true;
+        });
     }
 }
 
