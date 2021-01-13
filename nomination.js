@@ -2,6 +2,7 @@ const theShoppiesStorageId = 'the-shoppies-nominations';
 const theShoppiesSavedEntryId = 'shoppies-'
 const MAX_NOMINATIONS = 5;
 
+// utilities
 HTMLElement.prototype.inputIsEmpty = function(){
     return this.value.trim().length === 0;
 }
@@ -12,12 +13,12 @@ HTMLElement.prototype.show = function(){
     this.style.display = 'block'
 }
 
-function enableButton(HTMLButton){
-    HTMLButton.disabled = false;
+HTMLButtonElement.prototype.enable = function(){
+    this.disabled = false;
 }
 
-function disableButton(HTMLButton){
-    HTMLButton.disabled = true;
+HTMLButtonElement.prototype.disable = function(){
+    this.disabled = true;
 }
 
 
@@ -28,10 +29,10 @@ function Movie(Title, Year, imdbId){
     this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID;
 }
 Movie.prototype.saveToLocalStorage = function(){
-    localStorage.setItem('the-shoppies-nominations', true); // this is to check if some nominations were previously saved
+    localStorage.setItem(theShoppiesStorageId, true); // this is to check if some nominations were previously saved
 
     // the shoppies string prefix is so we can identify which local storage items to select
-    localStorage.setItem('shoppies-' + this.imdbID, this.uniqueIdentifier);
+    localStorage.setItem(theShoppiesSavedEntryId + this.imdbID, this.uniqueIdentifier);
 }
 // TODO; ?
 Movie.prototype.display = function(){
@@ -143,8 +144,8 @@ function listMovieSarchResults(movies){
         btn.addEventListener("click", () => {
 
             listMovieNomination(movie)
-            disableButton(btn); // disable nomination button for this movie
-            
+            // disableButton(btn); // disable nomination button for this movie
+            btn.disable();
         });
     }
 }
@@ -190,7 +191,18 @@ function previouslySavedNominationsExist(){
     return false;
 }
 
-function getPreviousNominationsFromLocalStorage(){
+function saveNominationToLocalStorage(){
+    let spinner = document.getElementById('savingWaitSpinner');
+    let onSavedSuccessBar = document.getElementById('onSavedSuccessBar');
+    spinner.show();
+    for(const Movie of AllNominations.getMovies()){
+        Movie.saveToLocalStorage();
+    }
+    spinner.hide();
+    onSavedSuccessBar.show();
+}
+
+function loadPreviousNominationsFromLocalStorage(){
     for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
         if(key.startsWith(theShoppiesSavedEntryId)){
             let savedMovie = localStorage.getItem(key);
@@ -205,22 +217,21 @@ function getPreviousNominationsFromLocalStorage(){
     
 }
 
+function deletePreviousNominationsInLocalStorage(){
+    localStorage.removeItem(theShoppiesStorageId);
+    for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
+        if(key.startsWith(theShoppiesSavedEntryId)){
+            localStorage.removeItem(key);
+        }
+    }
+}
+
 function enableOriginalNominationButtonForMovie(movie){
     let originalButton = document.getElementById(`${movie.imdbID}-add`);
     // may or may not exist since users can visit using a shareable link
-    if(originalButton) enableButton(originalButton);
+    if(originalButton) originalButton.enable();
 }
 
-function saveNominationToLocalStorage(){
-    let spinner = document.getElementById('savingWaitSpinner');
-    let onSavedSuccessBar = document.getElementById('onSavedSuccessBar');
-    spinner.show();
-    for(const Movie of AllNominations.getMovies()){
-        Movie.saveToLocalStorage();
-    }
-    spinner.hide();
-    onSavedSuccessBar.show();
-}
 
 window.onload = function(){
     const searchBtn = document.getElementById('searchBtn');
@@ -230,15 +241,22 @@ window.onload = function(){
     const spinner = document.getElementById('resultsWaitingSpinner');
     const nominationsCompleteModalButton = document.getElementById('nominationsCompleteModalCloseButton');
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
+    
+    
     const loadFromStorageModal = document.getElementById('loadFromStorageModal');
-
     const loadFromStorageDismissButton = document.getElementById('loadFromStorageDismissButton');
     const loadFromStorageAcceptButton = document.getElementById('loadFromStorageAcceptButton');
-    
+    const deleteFromStorageButton = document.getElementById('deleteFromStorageButton');
+
+
+    deleteFromStorageButton.addEventListener('click', () => {
+        deletePreviousNominationsInLocalStorage();
+        loadFromStorageModal.hide();
+    });
     loadFromStorageDismissButton.addEventListener('click', () => loadFromStorageModal.hide());
 
     loadFromStorageAcceptButton.addEventListener('click', () => {
-        getPreviousNominationsFromLocalStorage();
+        loadPreviousNominationsFromLocalStorage();
         loadFromStorageModal.hide();
     });
 
@@ -252,16 +270,10 @@ window.onload = function(){
     }
 
 
-
-    
-
-
-
-
-    
     nominationsCompleteModalButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
 
     saveNominationToLocalStorageButton.addEventListener('click', saveNominationToLocalStorage);
+
     // this is so that we can hide the alert message incase it was previously shown
     // todo: add debounce
     movieSeachNameInput.addEventListener('keyup', () => alertField.hide());
