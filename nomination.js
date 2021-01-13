@@ -134,12 +134,21 @@ async function fetchMovieFromAPI(movieTitle){
 
 function listMovieSarchResults(movies){
     const searchResultsList = document.getElementById('searchResultsList');
+
+    const template = document.querySelector('template');
+    let node = document.importNode(template.content, true);
+    console.log(node.children);
+    // document.body.appendChild(node.cardView);
+
     searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
 
     for(const movie of movies){
        
-        searchResultsList.insertAdjacentHTML('afterbegin', `<li> ${movie.Title} (${movie.Year})  <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button></li>`)
+        //searchResultsList.insertAdjacentHTML('afterbegin', `<li> ${movie.Title} (${movie.Year})  <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button></li>`)
 
+        // cardView.children.moviePoster.src =
+        searchResultsList.appendChild(node);
+        // searchResultsList.insertAdjacentHTML('afterbegin',cardView )
         let btn = document.getElementById(`${movie.imdbID}-add`);
         btn.addEventListener("click", () => {
 

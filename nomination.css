@@ -3,7 +3,7 @@ body{
 }
 .main_container{
   position: absolute;
-  width: 300px;
+  width: auto;
   height: 200px;
   z-index: 15;
   top: 50%;
@@ -26,7 +26,7 @@ body{
   text-align: center;
 }
 .parent{
-    width:500px;
+    /* width:500px; */
     height:auto;
 }
 #enterTitleAlert{
@@ -52,4 +52,7 @@ i{
 }
 #loadFromStorageModal{
     
+}
+#resultsTitle{
+    text-align:center
 }
