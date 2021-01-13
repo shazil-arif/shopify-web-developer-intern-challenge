@@ -11,6 +11,7 @@
 </head>
 <body>
 
+  <!-- some templates -->
   <template id='cardViewComponent'>
     <div id ="cardView" class="card" style="width: 18rem;">
       <img id='moviePoster' src="..." class="card-img-top" alt="...">
@@ -33,6 +34,7 @@
     <div class="row"></div>
   </template>
 
+
   <template id='nominatedMovieComponent'>
     <li id='imdbId'> Movie Title (Year)    
       <button>click me</button>   
@@ -40,6 +42,8 @@
     <a id='imdbId-remove' class="btn btn-primary"><i class="fas fa-trash rightIconIndent"></i>Remove</a>  
 
   </template>
+
+  <!-- end of templates -->
   
   
   <div id='loadFromStorageModal' class="modal hidden" tabindex="-1">
@@ -167,6 +171,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 <script src='./Movie.js'></script>
 <script src='./Nomination.js'></script>
+<script src='./request.js'></script>
+<script src='./shareable-links.js'></script>
+<script src='./search-result-UI.js'></script>
+<script src='./storage.js'></script>
 <script src='./main.js'></script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+const movieResultsPerRow = 2;
+
 function listMovieSarchResults(movies){
   
     document.getElementById('searchResultsContainer').show();

@@ -1,3 +1,7 @@
+const maxNominations = 5;
+const theShoppiesStorageId = 'the-shoppies-nominations';
+const theShoppiesSavedEntryId = 'shoppies-'
+
 function Movie(Title, Year, imdbId, Poster){
     this.Title = Title;
     this.Year = Year;

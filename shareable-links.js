@@ -1,3 +1,4 @@
+
 function userIsVisitingWithShareableLink(){
     let queryString = window.location.search;
     return queryString.length > 0;
@@ -35,8 +36,8 @@ function createShareableLink(){
      * Query Parameter Format:
      * 'Title-Year-imdbID'
      */
-    for(const Nomination of AllNominations.getMovies()){
-        let queryParameter = Nomination.uniqueIdentifier;
+    for(const Movie of AllNominations.getMovies()){
+        let queryParameter = Movie.uniqueIdentifier;
         queryString += queryParameter;
         queryString += '&';
     }
