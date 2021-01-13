@@ -14,6 +14,16 @@ body{
   background-color: #e9ecef;
   border-radius: .3rem;
 }
+#header{
+  position: absolute;
+  z-index: 15;
+  top: 40%;
+  left: 50%;
+  margin: -150px 0 0 -250px;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
 .parent{
     width:500px;
     height:auto;
@@ -37,5 +47,8 @@ i{
 }
 #onSavedSuccessBar{
     color:green;
-    font-size: 10px;
+    font-size: 17px;
+}
+#loadFromStorageModal{
+    
 }

@@ -157,7 +157,7 @@ function listMovieNomination(movie){
 
     AllNominations.add(new Movie(movie.Title,  movie.Year, movie.imdbID));
             
-    if(AllNominations.count() === MAX_NOMINATIONS) {
+    if(AllNominations.count() >= MAX_NOMINATIONS) {
         document.getElementById('nominationsCompleteNotice').show();
         displayShareableLink();
     }
@@ -192,7 +192,7 @@ function previouslySavedNominationsExist(){
 
 function getPreviousNominationsFromLocalStorage(){
     for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
-        if(key.startsWith(theShoppiesSavedNominationId)){
+        if(key.startsWith(theShoppiesSavedEntryId)){
             let savedMovie = localStorage.getItem(key);
 
              // TODO: clean up
@@ -232,14 +232,22 @@ window.onload = function(){
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
     const loadFromStorageModal = document.getElementById('loadFromStorageModal');
 
-    const loadFromStorageDismissButton = document.getElementById('loadStorageDismissButton');
-    const loadFromStorageAcceptButton = document.getElementById('loadStorageAcceptButton');
+    const loadFromStorageDismissButton = document.getElementById('loadFromStorageDismissButton');
+    const loadFromStorageAcceptButton = document.getElementById('loadFromStorageAcceptButton');
     
     loadFromStorageDismissButton.addEventListener('click', () => loadFromStorageModal.hide());
 
-    loadFromStorageAcceptButton.addEventListener('click', getPreviousNominationsFromLocalStorage);
+    loadFromStorageAcceptButton.addEventListener('click', () => {
+        getPreviousNominationsFromLocalStorage();
+        loadFromStorageModal.hide();
+    });
 
-    if(previouslySavedNominationsExist()) {
+    if(userIsVisitingWithShareableLink()){
+        parseMovieTitlesFromQueryParameters();
+    }
+
+    // a design choice here is that if a user is visiting using a shareable link, they are likely not interested in their previously saved nominations
+    if(previouslySavedNominationsExist() && !userIsVisitingWithShareableLink()) {
         loadFromStorageModal.show();
     }
 
@@ -248,9 +256,7 @@ window.onload = function(){
     
 
 
-    if(userIsVisitingWithShareableLink()){
-        parseMovieTitlesFromQueryParameters();
-    }
+
 
     
     nominationsCompleteModalButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
@@ -258,7 +264,7 @@ window.onload = function(){
     saveNominationToLocalStorageButton.addEventListener('click', saveNominationToLocalStorage);
     // this is so that we can hide the alert message incase it was previously shown
     // todo: add debounce
-    movieSeachNameInput.addEventListener('keyup', alertField.hide);
+    movieSeachNameInput.addEventListener('keyup', () => alertField.hide());
 
     // even to fire on search button click
     // TODO: add debounce

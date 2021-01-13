@@ -23,13 +23,25 @@
           <p>Would you like to load these?</p>
         </div>
         <div class="modal-footer">
-          <button id='loadFromStorageDismissButton' type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss <i class="far fa-times-circle leftIndent"></i> </button>
-          <button id='loadFromPreviousAcceptButton' type="button" class="btn btn-primary">Load Previous Nominations <i class="fas fa-check-circle leftIndent"></i></button>
+          <button id='deleteFromStorageButton' type="button" class="btn btn-danger" data-bs-dismiss="modal">Clear Storage <i class="fas fa-trash leftIndent"></i> </button>
+          <button id='loadFromStorageDismissButton' type="button" class="btn btn-danger" data-bs-dismiss="modal">Dismiss <i class="far fa-times-circle leftIndent"></i> </button>
+          <button id='loadFromStorageAcceptButton' type="button" class="btn btn-primary">Load<i class="fas fa-check-circle leftIndent"></i></button>
         </div>
       </div>
     </div>
   </div>
 
+  <div id='header'>
+
+  <h3 id='title'>The Shoppies  
+    <button type="button" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Check GitHub Code">
+      See code on GitHub <i class="fab fa-github-square leftIndent"></i>
+    </button>
+  </h3> 
+ 
+
+  </div>
+  
     <div class='parent main_container'>
 
       <div id='nominationsCompleteNotice' class="modal hidden" tabindex="-1">
@@ -45,6 +57,10 @@
               <p>Here is a shareable link of your nominations you can share with your friends!</p>
               <a id='shareableLinkAnchorTag' href="">Here</a>
             </div>
+
+            <p id='onSavedSuccessBar' class='hidden'><i  class="fas fa-check-circle leftIndent"></i> Successfully saved nominations. Feel free to close your browser</p>
+
+
             <div class="modal-footer">
               <button type="button" id ='nominationsCompleteModalCloseButton' class="btn btn-danger" data-bs-dismiss="modal">Close <i class="far fa-times-circle leftIndent"></i></button>
               <button type="button" id ='saveNominationToLocalStorageButton' class="btn btn-primary">Save changes <i class="fas fa-save leftIndent"></i></button>
@@ -54,7 +70,6 @@
               <span class="visually-hidden">Saving...</span>
           </div>
 
-          <p id='onSavedSuccessBar'><i  class="fas fa-check-circle leftIndent"></i> Successfully saved nominations. Feel free to close your browser</p>
 
           </div>
         </div>
