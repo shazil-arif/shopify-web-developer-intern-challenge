@@ -28,9 +28,14 @@
               <a id='shareableLinkAnchorTag' href="">Here</a>
             </div>
             <div class="modal-footer">
-              <button type="button" id ='modalCloseButton' class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id ='saveNominationToLocalStorageButton' class="btn btn-primary">Save changes</button>
+              <button type="button" id ='modalCloseButton' class="btn btn-danger" data-bs-dismiss="modal">Close <i class="far fa-times-circle leftIndent"></i></button>
+              <button type="button" id ='saveNominationToLocalStorageButton' class="btn btn-primary">Save changes <i class="fas fa-save leftIndent"></i></button>
             </div>
+
+            <div id='savingWaitSpinner' class="spinner-border text-primary hidden" role="status">
+              <span class="visually-hidden">Saving...</span>
+          </div>
+
           </div>
         </div>
       </div>

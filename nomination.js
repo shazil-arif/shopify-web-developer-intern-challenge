@@ -19,6 +19,20 @@ function disableButton(HTMLButton){
 }
 
 
+function Movie(Title, Year, imdbId){
+    this.Title = Title;
+    this.Year = Year;
+    this.imdbID = imdbId;
+    this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID;
+}
+Movie.prototype.saveToLocalStorage = function(){
+    localStorage.setItem(this.imdbID, this.uniqueIdentifier);
+}
+// TODO; ?
+Movie.prototype.display = function(){
+
+}
+
 function Nominations(){
     this.movies = {};
     this.size = 0;
@@ -67,7 +81,7 @@ function parseMovieTitlesFromQueryParameters(){
         const movieYear = movieInfo[1];
         const movieimdbID = movieInfo[2];
 
-        const movie = {Title: movieTitle, Year: movieYear, imdbId: movieimdbID};
+        const movie = new Movie(movieTitle, movieYear,  movieimdbID);
 
         listMovieNomination(movie);
     }
@@ -81,7 +95,7 @@ function createShareableLink(){
      * 'Title-Year-imdbID'
      */
     for(const Nomination of AllNominations.getNominations()){
-        let queryParameter = `${Nomination.Title}-${Nomination.Year}-${Nomination.imdbID}`
+        let queryParameter = Nomination.uniqueIdentifier;
         queryString += queryParameter;
         queryString += '&';
     }
@@ -140,11 +154,7 @@ function listMovieSarchResults(movies){
  */
 function listMovieNomination(movie){
 
-    AllNominations.add({
-        Title: movie.Title, 
-        Year: movie.Year,
-        imdbID: movie.imdbID
-    });
+    AllNominations.add(new Movie(movie.Title,  movie.Year, movie.imdbID));
             
     if(AllNominations.count() === MAX_NOMINATIONS) {
         document.getElementById('nominationsCompleteNotice').show();
@@ -181,7 +191,12 @@ function enableOriginalNominationButtonForMovie(movie){
 }
 
 function saveNominationToLocalStorage(){
-
+    let spinner = document.getElementById('savingWaitSpinner');
+    spinner.show();
+    for(const Movie of AllNominations.getNominations()){
+        Movie.saveToLocalStorage();
+    }
+    spinner.hide();
 }
 
 window.onload = function(){
