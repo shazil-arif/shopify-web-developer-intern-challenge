@@ -82,25 +82,38 @@ Movie.prototype.displayAsNomination = function(){
         helpMessage.hide();
         nominatedMovieList.show();
     
-        nominatedMovieList.insertAdjacentHTML('afterbegin', `<li id="${movie.imdbID}" >${movie.Title} (${movie.Year}) </li> 
-        <button type="button" id = "${movie.imdbID}-remove" class="btn btn-primary"><i class="fas fa-trash"></i> Remove</button>
-        `);
+        const nominatedMovieComponent = document.getElementById('nominatedMovieComponent');
+        const movieTitleAndYear = nominatedMovieComponent.querySelector('li');
+        const removeNominationButton = nominatedMovieComponent.querySelector('button');
 
-        let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
-        removeNominationBtn.addEventListener('click', () => {
-            AllNominations.remove(movie.imdbID);
-            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`)); // remove the title
-            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`)); // remove the titles REMOVE button
+        movieTitleAndYear.setAttribute('id', this.imdbID);
+        removeNominationButton.setAttribute('id', `${movie.imdbID}-remove`);
 
-            enableOriginalNominationButtonForMovie(movie);
+        const node = document.importNode(nominatedMovieComponent.content, true);
+        nominatedMovieList.appendChild(node);
 
-            if (AllNominations.isEmpty()) helpMessage.show();
-        });
+        this.bindRemoveNominationButton();
+        
     }
 }
 
 Movie.prototype.bindRemoveNominationButton = function(){
-    
+    let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
+    removeNominationBtn.addEventListener('click', () => {
+        AllNominations.remove(movie.imdbID);
+        nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`)); // remove the title
+        nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`)); // remove the titles REMOVE button
+
+        this.enableNominationButton();
+
+        if (AllNominations.isEmpty()) helpMessage.show();
+    });
+}
+
+Movie.prototype.enableNominationButton = function(){
+    let nominationBtn = document.getElementById(`${movie.imdbID}-add`);
+    // may or may not exist since users can visit using a shareable link
+    if(nominationBtn) originalButton.enable();
 }
 
 function Nominations(){
@@ -294,12 +307,6 @@ function deletePreviousNominationsInLocalStorage(){
             localStorage.removeItem(key);
         }
     }
-}
-
-function enableOriginalNominationButtonForMovie(movie){
-    let originalButton = document.getElementById(`${movie.imdbID}-add`);
-    // may or may not exist since users can visit using a shareable link
-    if(originalButton) originalButton.enable();
 }
 
 
