@@ -11,14 +11,26 @@
 </head>
 <body>
 
-  <template>
+  <template id='cardViewComponent'>
     <div id ="cardView" class="card" style="width: 18rem;">
       <img id='moviePoster' src="..." class="card-img-top" alt="...">
       <div class="card-body">
-        <h5 class="card-title">Movie Title and Year</h5>
+        <h5 id="movieTitleAndYearInfo" class="card-title">Movie Title and Year</h5>
         <a href="#" class="btn btn-primary">Nominate</a>
       </div>
     </div>
+
+    <style>
+      #cardView{
+        margin-right: 5px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+    </style>
+  </template>
+
+  <template id='cardViewRowComponent'>
+    <div class="row"></div>
   </template>
 
   <div id='loadFromStorageModal' class="modal hidden" tabindex="-1">
@@ -99,7 +111,7 @@
 
 
         <div class="accordion" id="accordionExample">
-            <div class="accordion-item hidden" id='searchResultsContainer'>
+            <div class="accordion-item hidden" >
               <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                   Search Results <i class="fas fa-search-plus leftIndent"></i>
@@ -133,30 +145,8 @@
           <br>
           <h3 id='resultsTitle'>Results</h3>
           <hr>
-          <div class="container">
-            <div class="row">
-              <div class="col-sm">
-                <div class="card" style="width: 18rem;">
-                  <img src="..." class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm">
-                <div class="card" style="width: 18rem;">
-                  <img src="..." class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+          <div id="searchResultsContainer" class="container">
+            
           </div>
 
     </div>

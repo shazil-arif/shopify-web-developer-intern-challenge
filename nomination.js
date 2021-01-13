@@ -135,20 +135,43 @@ async function fetchMovieFromAPI(movieTitle){
 function listMovieSarchResults(movies){
     const searchResultsList = document.getElementById('searchResultsList');
 
-    const template = document.querySelector('template');
-    let node = document.importNode(template.content, true);
-    console.log(node.children);
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    
+   
     // document.body.appendChild(node.cardView);
 
-    searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
+    // searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
 
+    let count = 0;
     for(const movie of movies){
        
+        if(count % 2 === 0){
+            console.log(count);
+            const row = document.getElementById('cardViewRowComponent');
+            let rowComponent = document.importNode(row.content, true);
+            searchResultsContainer.appendChild(rowComponent);
+            searchResultsContainer.children;
+        }
         //searchResultsList.insertAdjacentHTML('afterbegin', `<li> ${movie.Title} (${movie.Year})  <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button></li>`)
 
         // cardView.children.moviePoster.src =
-        searchResultsList.appendChild(node);
         // searchResultsList.insertAdjacentHTML('afterbegin',cardView )
+
+        const template = document.getElementById('cardViewComponent');
+        let node = document.importNode(template.content, true);
+        
+        let image = node.getElementById('moviePoster');
+        let details = node.getElementById('movieTitleAndYearInfo');
+        let nominateBtn = node.querySelector('a');
+
+        image.setAttribute('src', movie.Poster);
+        details.innerText = `${movie.Title} (${movie.Year})`;
+        nominateBtn.setAttribute('id', `${movie.imdbID}-add`);
+
+
+        searchResultsContainer.children[Math.floor(count/2)].appendChild(node);
+
+
         let btn = document.getElementById(`${movie.imdbID}-add`);
         btn.addEventListener("click", () => {
 
@@ -156,6 +179,8 @@ function listMovieSarchResults(movies){
             // disableButton(btn); // disable nomination button for this movie
             btn.disable();
         });
+
+        count++;
     }
 }
 
