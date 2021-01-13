@@ -1,3 +1,5 @@
+const theShoppiesStorageId = 'the-shoppies-nominations';
+const theShoppiesSavedEntryId = 'shoppies-'
 const MAX_NOMINATIONS = 5;
 
 HTMLElement.prototype.inputIsEmpty = function(){
@@ -26,7 +28,10 @@ function Movie(Title, Year, imdbId){
     this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID;
 }
 Movie.prototype.saveToLocalStorage = function(){
-    localStorage.setItem(this.imdbID, this.uniqueIdentifier);
+    localStorage.setItem('the-shoppies-nominations', true); // this is to check if some nominations were previously saved
+
+    // the shoppies string prefix is so we can identify which local storage items to select
+    localStorage.setItem('shoppies-' + this.imdbID, this.uniqueIdentifier);
 }
 // TODO; ?
 Movie.prototype.display = function(){
@@ -53,7 +58,7 @@ Nominations.prototype.count = function(){
 Nominations.prototype.isEmpty = function (){
     return this.size === 0;
 }
-Nominations.prototype.getNominations = function (){
+Nominations.prototype.getMovies = function (){
     let nominations = [];
     for(const key in this.movies){
         nominations.push(this.movies[key]);
@@ -87,6 +92,7 @@ function parseMovieTitlesFromQueryParameters(){
     }
 }
 
+
 function createShareableLink(){
     let queryString = '?';
 
@@ -94,7 +100,7 @@ function createShareableLink(){
      * Query Parameter Format:
      * 'Title-Year-imdbID'
      */
-    for(const Nomination of AllNominations.getNominations()){
+    for(const Nomination of AllNominations.getMovies()){
         let queryParameter = Nomination.uniqueIdentifier;
         queryString += queryParameter;
         queryString += '&';
@@ -184,6 +190,19 @@ function listMovieNomination(movie){
     }
 }
 
+function checkLocalStorage(){
+    if(localStorage.getItem(theShoppiesStorageId)){
+        for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
+            if(key.startsWith(theShoppiesSavedNominationId)){
+                let movie = localStorage.getItem(key);
+                const movieInfo = movie.split('-');
+                AllNominations.add(new Movie(movieInfo[0], movieInfo[1], movieInfo[2]));
+            }
+        }
+    }
+    
+}
+
 function enableOriginalNominationButtonForMovie(movie){
     let originalButton = document.getElementById(`${movie.imdbID}-add`);
     // may or may not exist since users can visit using a shareable link
@@ -193,7 +212,7 @@ function enableOriginalNominationButtonForMovie(movie){
 function saveNominationToLocalStorage(){
     let spinner = document.getElementById('savingWaitSpinner');
     spinner.show();
-    for(const Movie of AllNominations.getNominations()){
+    for(const Movie of AllNominations.getMovies()){
         Movie.saveToLocalStorage();
     }
     spinner.hide();
