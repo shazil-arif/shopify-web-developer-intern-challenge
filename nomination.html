@@ -16,7 +16,7 @@
       <img id='moviePoster' src="..." class="card-img-top" alt="...">
       <div class="card-body">
         <h5 id="movieTitleAndYearInfo" class="card-title">Movie Title and Year</h5>
-        <button class="btn btn-primary">Nominate</a>
+        <button id='imdbId-add' class="btn btn-primary">Nominate</button>
       </div>
     </div>
 
@@ -34,8 +34,11 @@
   </template>
 
   <template id='nominatedMovieComponent'>
-    <li> Movie Title (Year) </li> 
-    <button type="button" class="btn btn-primary"><i class="fas fa-trash"></i>Remove</button>
+    <li id='imdbId'> Movie Title (Year)    
+      <button>click me</button>   
+    </li> 
+    <a id='imdbId-remove' class="btn btn-primary"><i class="fas fa-trash rightIconIndent"></i>Remove</a>  
+
   </template>
   
   
@@ -105,7 +108,7 @@
 
         <div class="mb-3">
             <h5 class="center">Movie Title <i class="fas fa-video leftIndent"></i></label>
-            <input type="text" class="form-control" id="movieSearchNameInput" placeholder="E.g Home Alone 2">
+            <input type="text" class="form-control" id="movieSearchNameInput" placeholder="E.g Home Alone">
         </div>
         <code id="enterTitleAlert">Enter a movie title!</code>
         <button type="button" id= 'searchBtn' class="btn btn-primary"><i class="fas fa-search"></i> Search</button>

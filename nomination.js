@@ -46,24 +46,27 @@ Movie.prototype.displayAsSearchResult = function(searchResultNumber){
     
     let image = node.getElementById('moviePoster');
     let details = node.getElementById('movieTitleAndYearInfo');
-    let nominateBtn = node.querySelector('a');
+    let nominateBtn = node.querySelector('button');
 
     image.setAttribute('src', this.Poster);
     details.innerText = `${this.Title} (${this.Year})`;
     nominateBtn.setAttribute('id', `${this.imdbID}-add`);
 
-    this.bindNominationButton()
 
     let rowNumber = Math.floor(searchResultNumber/movieResultsPerRow);
     searchResultsContainer.children[rowNumber].appendChild(node);
+
+    this.bindNominationButton()
+
 
 }
 
 Movie.prototype.bindNominationButton = function(){
     let nominationBtn = document.getElementById(`${this.imdbID}-add`);
     nominationBtn.addEventListener("click", () => {
-        listMovieNomination(movie)
-        btn.disable(); // disable once this movie has been nominated
+        // listMovieNomination(movie)
+        this.displayAsNomination();
+        nominationBtn.disable(); // disable once this movie has been nominated
     });
 }
 
@@ -83,26 +86,30 @@ Movie.prototype.displayAsNomination = function(){
         nominatedMovieList.show();
     
         const nominatedMovieComponent = document.getElementById('nominatedMovieComponent');
-        const movieTitleAndYear = nominatedMovieComponent.querySelector('li');
-        const removeNominationButton = nominatedMovieComponent.querySelector('button');
+        const node = document.importNode(nominatedMovieComponent.content, true);
+
+        const movieTitleAndYear = node.querySelector('li');
+        const removeNominationButton = node.querySelector('a');
+
 
         movieTitleAndYear.setAttribute('id', this.imdbID);
-        removeNominationButton.setAttribute('id', `${movie.imdbID}-remove`);
+        movieTitleAndYear.innerText = `${this.Title} (${this.Year})`
 
-        const node = document.importNode(nominatedMovieComponent.content, true);
+        removeNominationButton.setAttribute('id', `${this.imdbID}-remove`);
+
         nominatedMovieList.appendChild(node);
 
-        this.bindRemoveNominationButton();
+        this.bindRemoveButton();
         
     }
 }
 
-Movie.prototype.bindRemoveNominationButton = function(){
-    let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
+Movie.prototype.bindRemoveButton = async function(){
+    let removeNominationBtn = document.getElementById(`${this.imdbID}-remove`);
     removeNominationBtn.addEventListener('click', () => {
-        AllNominations.remove(movie.imdbID);
-        nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`)); // remove the title
-        nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`)); // remove the titles REMOVE button
+        AllNominations.remove(this.imdbID);
+        nominatedMovieList.removeChild(document.getElementById(`${this.imdbID}`)); // remove the title
+        nominatedMovieList.removeChild(document.getElementById(`${this.imdbID}-remove`)); // remove the titles REMOVE button
 
         this.enableNominationButton();
 
@@ -110,10 +117,11 @@ Movie.prototype.bindRemoveNominationButton = function(){
     });
 }
 
+
 Movie.prototype.enableNominationButton = function(){
-    let nominationBtn = document.getElementById(`${movie.imdbID}-add`);
+    let nominationBtn = document.getElementById(`${this.imdbID}-add`);
     // may or may not exist since users can visit using a shareable link
-    if(nominationBtn) originalButton.enable();
+    if(nominationBtn) nominationBtn.enable();
 }
 
 function Nominations(){
@@ -166,7 +174,8 @@ function parseMovieTitlesFromQueryParameters(){
 
         const movie = new Movie(movieTitle, movieYear,  movieimdbID, '');
 
-        listMovieNomination(movie);
+        movie.displayAsNomination();
+        // listMovieNomination(movie);
     }
 }
 
@@ -212,7 +221,8 @@ async function fetchMovieFromAPI(movieTitle){
 function listMovieSarchResults(movies){
   
     for(let i = 0; i < movies.length; i++){
-        if(currentRowIsFull(i)){
+        let currentRowNumber = i;
+        if(currentRowIsFull(currentRowNumber)){
             insertNewRow();
         }
         
@@ -222,8 +232,8 @@ function listMovieSarchResults(movies){
     }
 }
 
-function currentRowIsFull(){
-    return count % movieResultsPerRow === 0;
+function currentRowIsFull(rowNumber){
+    return rowNumber % movieResultsPerRow === 0;
 }
 
 function insertNewRow(){
@@ -233,41 +243,7 @@ function insertNewRow(){
     searchResultsContainer.appendChild(rowComponent);
 }
 
-/**
- * @brief all this function needs is a movie object containing Title, Year and imdbID and will list it and handle any other intricacies
- * @param {Object} movie 
- */
-function listMovieNomination(movie){
 
-    AllNominations.add(new Movie(movie.Title,  movie.Year, movie.imdbID, movie.Poster));
-            
-    if(AllNominations.count() >= maxNominations) {
-        document.getElementById('nominationsCompleteNotice').show();
-        displayShareableLink();
-    }
-    else{
-        const nominatedMovieList = document.getElementById('nominatedMovieList');
-        const helpMessage = document.getElementById('helpMessage');
-
-        helpMessage.hide();
-        nominatedMovieList.show();
-    
-        nominatedMovieList.insertAdjacentHTML('afterbegin', `<li id="${movie.imdbID}" >${movie.Title} (${movie.Year}) </li> 
-        <button type="button" id = "${movie.imdbID}-remove" class="btn btn-primary"><i class="fas fa-trash"></i> Remove</button>
-        `);
-
-        let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
-        removeNominationBtn.addEventListener('click', () => {
-            AllNominations.remove(movie.imdbID);
-            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`)); // remove the title
-            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`)); // remove the titles REMOVE button
-
-            enableOriginalNominationButtonForMovie(movie);
-
-            if (AllNominations.isEmpty()) helpMessage.show();
-        });
-    }
-}
 
 function previouslySavedNominationsExist(){
     if(localStorage.getItem(theShoppiesStorageId)) return true;
@@ -294,7 +270,8 @@ function loadPreviousNominationsFromLocalStorage(){
             const movieInfo = savedMovie.split('-');
             const movie = new Movie(movieInfo[0], movieInfo[1], movieInfo[2], '');
             AllNominations.add(movie);
-            listMovieNomination(movie);
+            movie.displayAsNomination();
+            // listMovieNomination(movie);
         }
     }
     
