@@ -66,7 +66,7 @@ Nominations.prototype.getMovies = function (){
     return nominations;
 }
 
-function userIsVisitingViaShareableLink(){
+function userIsVisitingWithShareableLink(){
     let queryString = window.location.search;
     return queryString.length > 0;
 }
@@ -137,16 +137,11 @@ function listMovieSarchResults(movies){
 
     for(const movie of movies){
        
-        searchResultsList.insertAdjacentHTML('afterbegin', 
-        `
-        <li>
-        ${movie.Title} (${movie.Year}) 
-        <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button>
-        </li>`)
+        searchResultsList.insertAdjacentHTML('afterbegin', `<li> ${movie.Title} (${movie.Year})  <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button></li>`)
 
         let btn = document.getElementById(`${movie.imdbID}-add`);
         btn.addEventListener("click", () => {
-            // let movieToNominate = idLookup[movie.imdbID];
+
             listMovieNomination(movie)
             disableButton(btn); // disable nomination button for this movie
             
@@ -190,14 +185,21 @@ function listMovieNomination(movie){
     }
 }
 
-function checkLocalStorage(){
-    if(localStorage.getItem(theShoppiesStorageId)){
-        for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
-            if(key.startsWith(theShoppiesSavedNominationId)){
-                let movie = localStorage.getItem(key);
-                const movieInfo = movie.split('-');
-                AllNominations.add(new Movie(movieInfo[0], movieInfo[1], movieInfo[2]));
-            }
+function previouslySavedNominationsExist(){
+    if(localStorage.getItem(theShoppiesStorageId)) return true;
+    return false;
+}
+
+function getPreviousNominationsFromLocalStorage(){
+    for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
+        if(key.startsWith(theShoppiesSavedNominationId)){
+            let savedMovie = localStorage.getItem(key);
+
+             // TODO: clean up
+            const movieInfo = savedMovie.split('-');
+            const movie = new Movie(movieInfo[0], movieInfo[1], movieInfo[2])
+            AllNominations.add(movie);
+            listMovieNomination(movie);
         }
     }
     
@@ -211,11 +213,13 @@ function enableOriginalNominationButtonForMovie(movie){
 
 function saveNominationToLocalStorage(){
     let spinner = document.getElementById('savingWaitSpinner');
+    let onSavedSuccessBar = document.getElementById('onSavedSuccessBar');
     spinner.show();
     for(const Movie of AllNominations.getMovies()){
         Movie.saveToLocalStorage();
     }
     spinner.hide();
+    onSavedSuccessBar.show();
 }
 
 window.onload = function(){
@@ -224,24 +228,37 @@ window.onload = function(){
     const alertField = document.getElementById('enterTitleAlert')
     const searchResultsContainer = document.getElementById('searchResultsContainer');
     const spinner = document.getElementById('resultsWaitingSpinner');
-    const modalCloseButton = document.getElementById('modalCloseButton');
+    const nominationsCompleteModalButton = document.getElementById('nominationsCompleteModalCloseButton');
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
+    const loadFromStorageModal = document.getElementById('loadFromStorageModal');
+
+    const loadFromStorageDismissButton = document.getElementById('loadStorageDismissButton');
+    const loadFromStorageAcceptButton = document.getElementById('loadStorageAcceptButton');
+    
+    loadFromStorageDismissButton.addEventListener('click', () => loadFromStorageModal.hide());
+
+    loadFromStorageAcceptButton.addEventListener('click', getPreviousNominationsFromLocalStorage);
+
+    if(previouslySavedNominationsExist()) {
+        loadFromStorageModal.show();
+    }
+
+
+
     
 
-    if(userIsVisitingViaShareableLink()){
+
+    if(userIsVisitingWithShareableLink()){
         parseMovieTitlesFromQueryParameters();
     }
 
-    modalCloseButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
+    
+    nominationsCompleteModalButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
 
-    saveNominationToLocalStorageButton.addEventListener('click', () => {
-        // TODO, add to local storage
-    })
+    saveNominationToLocalStorageButton.addEventListener('click', saveNominationToLocalStorage);
     // this is so that we can hide the alert message incase it was previously shown
     // todo: add debounce
-    movieSeachNameInput.addEventListener('keyup', () => {
-        alertField.hide();
-    });
+    movieSeachNameInput.addEventListener('keyup', alertField.hide);
 
     // even to fire on search button click
     // TODO: add debounce
