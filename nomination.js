@@ -1,6 +1,7 @@
 const theShoppiesStorageId = 'the-shoppies-nominations';
 const theShoppiesSavedEntryId = 'shoppies-'
-const MAX_NOMINATIONS = 5;
+const maxNominations = 5;
+const movieResultsPerRow = 2;
 
 // utilities
 HTMLElement.prototype.inputIsEmpty = function(){
@@ -22,11 +23,12 @@ HTMLButtonElement.prototype.disable = function(){
 }
 
 
-function Movie(Title, Year, imdbId){
+function Movie(Title, Year, imdbId, Poster){
     this.Title = Title;
     this.Year = Year;
     this.imdbID = imdbId;
     this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID;
+    this.Poster = Poster;
 }
 Movie.prototype.saveToLocalStorage = function(){
     localStorage.setItem(theShoppiesStorageId, true); // this is to check if some nominations were previously saved
@@ -34,9 +36,71 @@ Movie.prototype.saveToLocalStorage = function(){
     // the shoppies string prefix is so we can identify which local storage items to select
     localStorage.setItem(theShoppiesSavedEntryId + this.imdbID, this.uniqueIdentifier);
 }
-// TODO; ?
-Movie.prototype.display = function(){
 
+Movie.prototype.displayAsSearchResult = function(searchResultNumber){
+
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+
+    const template = document.getElementById('cardViewComponent');
+    let node = document.importNode(template.content, true);
+    
+    let image = node.getElementById('moviePoster');
+    let details = node.getElementById('movieTitleAndYearInfo');
+    let nominateBtn = node.querySelector('a');
+
+    image.setAttribute('src', this.Poster);
+    details.innerText = `${this.Title} (${this.Year})`;
+    nominateBtn.setAttribute('id', `${this.imdbID}-add`);
+
+    this.bindNominationButton()
+
+    let rowNumber = Math.floor(searchResultNumber/movieResultsPerRow);
+    searchResultsContainer.children[rowNumber].appendChild(node);
+
+}
+
+Movie.prototype.bindNominationButton = function(){
+    let nominationBtn = document.getElementById(`${this.imdbID}-add`);
+    nominationBtn.addEventListener("click", () => {
+        listMovieNomination(movie)
+        btn.disable(); // disable once this movie has been nominated
+    });
+}
+
+Movie.prototype.displayAsNomination = function(){
+    
+    AllNominations.add(new Movie(this.Title,  this.Year, this.imdbID, this.Poster));
+            
+    if(AllNominations.count() >= maxNominations) {
+        document.getElementById('nominationsCompleteNotice').show();
+        displayShareableLink();
+    }
+    else{
+        const nominatedMovieList = document.getElementById('nominatedMovieList');
+        const helpMessage = document.getElementById('helpMessage');
+
+        helpMessage.hide();
+        nominatedMovieList.show();
+    
+        nominatedMovieList.insertAdjacentHTML('afterbegin', `<li id="${movie.imdbID}" >${movie.Title} (${movie.Year}) </li> 
+        <button type="button" id = "${movie.imdbID}-remove" class="btn btn-primary"><i class="fas fa-trash"></i> Remove</button>
+        `);
+
+        let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
+        removeNominationBtn.addEventListener('click', () => {
+            AllNominations.remove(movie.imdbID);
+            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`)); // remove the title
+            nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`)); // remove the titles REMOVE button
+
+            enableOriginalNominationButtonForMovie(movie);
+
+            if (AllNominations.isEmpty()) helpMessage.show();
+        });
+    }
+}
+
+Movie.prototype.bindRemoveNominationButton = function(){
+    
 }
 
 function Nominations(){
@@ -87,7 +151,7 @@ function parseMovieTitlesFromQueryParameters(){
         const movieYear = movieInfo[1];
         const movieimdbID = movieInfo[2];
 
-        const movie = new Movie(movieTitle, movieYear,  movieimdbID);
+        const movie = new Movie(movieTitle, movieYear,  movieimdbID, '');
 
         listMovieNomination(movie);
     }
@@ -133,55 +197,27 @@ async function fetchMovieFromAPI(movieTitle){
 }
 
 function listMovieSarchResults(movies){
-    const searchResultsList = document.getElementById('searchResultsList');
-
-    const searchResultsContainer = document.getElementById('searchResultsContainer');
-    
-   
-    // document.body.appendChild(node.cardView);
-
-    // searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
-
-    let count = 0;
-    for(const movie of movies){
-       
-        if(count % 2 === 0){
-            console.log(count);
-            const row = document.getElementById('cardViewRowComponent');
-            let rowComponent = document.importNode(row.content, true);
-            searchResultsContainer.appendChild(rowComponent);
-            searchResultsContainer.children;
+  
+    for(let i = 0; i < movies.length; i++){
+        if(currentRowIsFull(i)){
+            insertNewRow();
         }
-        //searchResultsList.insertAdjacentHTML('afterbegin', `<li> ${movie.Title} (${movie.Year})  <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button></li>`)
-
-        // cardView.children.moviePoster.src =
-        // searchResultsList.insertAdjacentHTML('afterbegin',cardView )
-
-        const template = document.getElementById('cardViewComponent');
-        let node = document.importNode(template.content, true);
         
-        let image = node.getElementById('moviePoster');
-        let details = node.getElementById('movieTitleAndYearInfo');
-        let nominateBtn = node.querySelector('a');
+        const currentMovie = new Movie(movies[i].Title, movies[i].Year, movies[i].imdbID, movies[i].Poster);
+        currentMovie.displayAsSearchResult(i);
 
-        image.setAttribute('src', movie.Poster);
-        details.innerText = `${movie.Title} (${movie.Year})`;
-        nominateBtn.setAttribute('id', `${movie.imdbID}-add`);
-
-
-        searchResultsContainer.children[Math.floor(count/2)].appendChild(node);
-
-
-        let btn = document.getElementById(`${movie.imdbID}-add`);
-        btn.addEventListener("click", () => {
-
-            listMovieNomination(movie)
-            // disableButton(btn); // disable nomination button for this movie
-            btn.disable();
-        });
-
-        count++;
     }
+}
+
+function currentRowIsFull(){
+    return count % movieResultsPerRow === 0;
+}
+
+function insertNewRow(){
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    const row = document.getElementById('cardViewRowComponent');
+    let rowComponent = document.importNode(row.content, true);
+    searchResultsContainer.appendChild(rowComponent);
 }
 
 /**
@@ -190,9 +226,9 @@ function listMovieSarchResults(movies){
  */
 function listMovieNomination(movie){
 
-    AllNominations.add(new Movie(movie.Title,  movie.Year, movie.imdbID));
+    AllNominations.add(new Movie(movie.Title,  movie.Year, movie.imdbID, movie.Poster));
             
-    if(AllNominations.count() >= MAX_NOMINATIONS) {
+    if(AllNominations.count() >= maxNominations) {
         document.getElementById('nominationsCompleteNotice').show();
         displayShareableLink();
     }
@@ -243,7 +279,7 @@ function loadPreviousNominationsFromLocalStorage(){
 
              // TODO: clean up
             const movieInfo = savedMovie.split('-');
-            const movie = new Movie(movieInfo[0], movieInfo[1], movieInfo[2])
+            const movie = new Movie(movieInfo[0], movieInfo[1], movieInfo[2], '');
             AllNominations.add(movie);
             listMovieNomination(movie);
         }
