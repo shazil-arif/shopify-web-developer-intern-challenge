@@ -18,22 +18,24 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Modal title</h5>
-              <button id ='modalCloseButton' type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 class="modal-title">Nominations List Complete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Modal body text goes here.</p>
+              <p>Hey there! You've selected 5 movies to nominate!</p>
+              <p>If you would like to save your nomination list for next time click Save changes below</p>
+              <p>Here is a shareable link of your nominations you can share with your friends!</p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" id ='modalCloseButton' class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id ='saveNominationToLocalStorageButton' class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>
       </div>
 
         <div class="mb-3">
-            <h5 class="center">Movie Title</label>
+            <h5 class="center">Movie Title <i class="fas fa-video leftIndent"></i></label>
             <input type="text" class="form-control" id="movieSearchNameInput" placeholder="E.g Home Alone 2">
         </div>
         <code id="enterTitleAlert">Enter a movie title!</code>
@@ -49,7 +51,7 @@
             <div class="accordion-item hidden" id='searchResultsContainer'>
               <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  Search Results
+                  Search Results <i class="fas fa-search-plus leftIndent"></i>
                 </button>
               </h2>
               <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -63,12 +65,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  Current Nominations
+                  Current Nominations <i class="fas fa-clipboard-list leftIndent"></i>
                 </button>
               </h2>
               <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    Search for a movie above and then add a title to your nomination list
+                    <p id='helpMessage'>Search for a movie above and then add a title to your nomination list</p> 
                     <ul id='nominatedMovieList' class='hidden'>
 
                     </ul>

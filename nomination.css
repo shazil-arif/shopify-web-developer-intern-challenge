@@ -29,3 +29,9 @@ body{
 .hidden{
     display:none;
 }
+.leftIndent{
+    margin-left: 5px;
+}
+i{
+    font-size:1.1em;
+}

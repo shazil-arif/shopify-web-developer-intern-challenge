@@ -1,3 +1,5 @@
+const MAX_NOMINATIONS = 5;
+
 HTMLElement.prototype.inputIsEmpty = function(){
     return this.value.trim().length === 0;
 }
@@ -7,6 +9,15 @@ HTMLElement.prototype.hide = function(){
 HTMLElement.prototype.show = function(){
     this.style.display = 'block'
 }
+
+function enableButton(HTMLButton){
+    HTMLButton.disabled = false;
+}
+
+function disableButton(HTMLButton){
+    HTMLButton.disabled = true;
+}
+
 
 function Movie(Title, Year, imdbID){
     this.Title = Title
@@ -31,6 +42,26 @@ Nominations.prototype.remove = function(imdbID){
 Nominations.prototype.count = function(){
     return this.size;
 }
+Nominations.prototype.isEmpty = function (){
+    return this.size === 0;
+}
+
+function userIsVisitingViaShareableLink(){
+    let queryString = window.location.search;
+    return queryString.length > 0;
+}
+
+function parseMovieTitlesFromQueryParameters(){
+    let queryParams = window.location.search.split('&');
+    queryParams[0] = queryParams[0].replace('?', '');
+    
+    for(const)
+    
+}
+
+function listMovieNomination(){
+
+}
 
 // singleton
 const AllNominations = new Nominations();
@@ -48,6 +79,8 @@ async function fetchMovieFromAPI(movieTitle){
 
 function listMovies(movies){
     const searchResultsList = document.getElementById('searchResultsList');
+    const helpMessage = document.getElementById('helpMessage');
+
     searchResultsList.innerHTML = ''; // remove previous movie results, not working atm
 
     const idLookup = {};
@@ -68,36 +101,37 @@ function listMovies(movies){
         `
         <li>
         ${movie.Title} (${movie.Year}) 
-        <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary"><i class="fas fa-search"></i> Nominate</button>
+        <button type="button" id = "${movie.imdbID}-add" class="btn btn-primary">Nominate</button>
         </li>`)
 
         let btn = document.getElementById(`${movie.imdbID}-add`);
         btn.addEventListener("click", () => {
             let movieToNominate = idLookup[movie.imdbID];
             
-
-
             AllNominations.add(movieToNominate);
             
-            if(AllNominations.count() === 5) {
+            if(AllNominations.count() === MAX_NOMINATIONS) {
                 document.getElementById('nominationsCompleteNotice').show();
             }
 
             const nominatedMovieList = document.getElementById('nominatedMovieList');
-            nominatedMovieList.innerHTML = '';
+        
+            helpMessage.hide();
             nominatedMovieList.show();
 
             nominatedMovieList.insertAdjacentHTML('afterbegin', `<li id="${movie.imdbID}" >${movie.Title} (${movie.Year}) </li> 
             <button type="button" id = "${movie.imdbID}-remove" class="btn btn-primary"><i class="fas fa-trash"></i> Remove</button>
             `);
-            btn.disabled = true;
 
+            disableButton(btn);
             let removeNominationBtn = document.getElementById(`${movie.imdbID}-remove`);
             removeNominationBtn.addEventListener('click', () => {
                 AllNominations.remove(movie.imdbID);
                 nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}`));
                 nominatedMovieList.removeChild(document.getElementById(`${movie.imdbID}-remove`));
+                enableButton(btn);
 
+                if (AllNominations.isEmpty()) helpMessage.show();
             })
         });
     }
@@ -110,8 +144,18 @@ window.onload = function(){
     const searchResultsContainer = document.getElementById('searchResultsContainer');
     const spinner = document.getElementById('resultsWaitingSpinner');
     const modalCloseButton = document.getElementById('modalCloseButton');
+    const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
+    
+
+    if(userIsVisitingViaShareableLink()){
+        parseMovieTitlesFromQueryParameters();
+    }
+
     modalCloseButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
 
+    saveNominationToLocalStorageButton.addEventListener('click', () => {
+        // TODO, add to local storage
+    })
     // this is so that we can hide the alert message incase it was previously shown
     // todo: add debounce
     movieSeachNameInput.addEventListener('keyup', () => {
