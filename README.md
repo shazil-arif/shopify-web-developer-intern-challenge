@@ -1,5 +1,6 @@
 # Shopify UX Developer Intern & Web Developer Intern Challenge - Summer 2021
 
+Built with Vanilla JavaScript, HTML and CSS without any frameworks. Only 3rd party library used is Bootstrap for some UI components
 
 [Click here to see the website in action](https://inspiring-engelbart-c27715.netlify.app/shoppies.html)
 
