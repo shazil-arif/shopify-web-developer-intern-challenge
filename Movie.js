@@ -54,7 +54,11 @@ Movie.prototype.bindNominationButton = function(){
 }
 
 Movie.prototype.displayAsNomination = function(){
-    
+    const nominationsView = document.getElementById('nominationsView');
+    const collapseTwo = document.getElementById('collapseTwo');
+    nominationsView.classList.remove('collapsed');
+    collapseTwo.classList.add('show');
+
     AllNominations.add(new Movie(this.Title,  this.Year, this.imdbID, this.Poster));
             
     const nominatedMovieList = document.getElementById('nominatedMovieList');
@@ -79,7 +83,7 @@ Movie.prototype.displayAsNomination = function(){
 
     this.bindRemoveButton();
 
-    if(AllNominations.count() >= maxNominations) {
+    if(AllNominations.count() >= maxNominations && !userIsVisitingWithShareableLink()) {
         document.getElementById('nominationsCompleteNotice').show();
         displayShareableLink();
     }

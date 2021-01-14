@@ -1,4 +1,4 @@
-const movieResultsPerRow = 2;
+const movieResultsPerRow = 3;
 
 function listMovieSarchResults(movies){
   

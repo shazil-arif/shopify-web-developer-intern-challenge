@@ -3,11 +3,10 @@ body{
 }
 #mainContainer{
   position: absolute;
-  width: 500px;
-  /* height: 200px; */
+  width: 900px;
   z-index: 15;
-  top: 50%;
-  left: 50%;
+  top: 25%;
+  left: 40%;
   margin: -150px 0 0 -250px;
   padding: 2rem 1rem;
   margin-bottom: 2rem;
@@ -18,8 +17,8 @@ body{
 #header{
   position: absolute;
   z-index: 15;
-  top: 40%;
-  left: 50%;
+  top: 15%;
+  left: 40%;
   margin: -150px 0 0 -250px;
   padding: 2rem 1rem;
   margin-bottom: 2rem;

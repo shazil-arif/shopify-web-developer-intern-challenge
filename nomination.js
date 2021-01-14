@@ -18,6 +18,7 @@ Nominations.prototype.count = function(){
 Nominations.prototype.isEmpty = function (){
     return this.size === 0;
 }
+// to support iteration, alternative: ES6 iterators but may not be supported everywhere
 Nominations.prototype.getMovies = function (){
     let nominations = [];
     for(const key in this.movies){

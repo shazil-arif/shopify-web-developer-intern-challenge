@@ -11,7 +11,7 @@ window.onload = function(){
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
     const restartBtn = document.getElementById('restartBtn');
 
-    restartBtn.addEventListener('click', () => location.reload());
+    restartBtn.addEventListener('click', () => window.location.href = window.location.origin);
     
     const loadFromStorageModal = document.getElementById('loadFromStorageModal');
     const loadFromStorageDismissButton = document.getElementById('loadFromStorageDismissButton');
