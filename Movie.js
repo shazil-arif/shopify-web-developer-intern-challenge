@@ -4,7 +4,7 @@ function Movie(Title, Year, imdbId, Poster){
     this.Title = Title;
     this.Year = Year;
     this.imdbID = imdbId;
-    this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID;
+    this.uniqueIdentifier = this.Title + '-' + this.Year + '-' + this.imdbID; // this identifier can be used to save and retrieve from local storage and for forming unique query parameters for shareable links
     this.Poster = Poster;
 }
 Movie.prototype.saveToLocalStorage = function(){

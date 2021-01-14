@@ -3,7 +3,7 @@ async function fetchMovieFromAPI(movieTitle){
     const apikey = 'fdf22c9a';
     const titleQueryParameter = `s=${movieTitle}`;
     const apiKeyQueryParameter = `apiKey=${apikey}`
-    const URL = `http://www.omdbapi.com/?${titleQueryParameter}&${apiKeyQueryParameter}`;
+    const URL = `https://www.omdbapi.com/?${titleQueryParameter}&${apiKeyQueryParameter}`;
     let data = await fetch(URL)
     data = await data.json();
     return data.Search;    
