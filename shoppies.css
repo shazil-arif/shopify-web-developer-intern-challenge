@@ -5,9 +5,8 @@ body{
   position: absolute;
   width: 900px;
   z-index: 15;
-  top: 25%;
   left: 40%;
-  margin: -150px 0 0 -250px;
+  margin: 110px 0 0 -250px;
   padding: 2rem 1rem;
   margin-bottom: 2rem;
   background-color: #e9ecef;
@@ -17,9 +16,8 @@ body{
 #header{
   position: absolute;
   z-index: 15;
-  top: 15%;
   left: 40%;
-  margin: -150px 0 0 -250px;
+  margin: 20px 0 0 -250px;
   padding: 2rem 1rem;
   margin-bottom: 2rem;
   text-align: center;
