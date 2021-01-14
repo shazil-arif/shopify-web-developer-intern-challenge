@@ -1,6 +1,4 @@
 const maxNominations = 5;
-const theShoppiesStorageId = 'the-shoppies-nominations';
-const theShoppiesSavedEntryId = 'shoppies-'
 
 function Movie(Title, Year, imdbId, Poster){
     this.Title = Title;
@@ -35,7 +33,7 @@ Movie.prototype.displayAsSearchResult = function(searchResultNumber){
     let rowNumber = Math.floor(searchResultNumber/movieResultsPerRow);
     searchResultsContainer.children[rowNumber].appendChild(node);
 
-    this.bindNominationButton()
+    this.bindNominationButton();
 
 
 }

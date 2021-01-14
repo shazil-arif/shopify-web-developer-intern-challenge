@@ -21,7 +21,7 @@ function parseMovieTitlesFromQueryParameters(){
             const movieYear = movieInfo[1];
             const movieimdbID = movieInfo[2];
     
-            const movie = new Movie(movieTitle.replaceAll('%20', ' '), movieYear,  movieimdbID, '');
+            const movie = new Movie(movieTitle.replaceAll('%20', ' '), movieYear,  movieimdbID, ''); // don't need the poster
     
             movie.displayAsNomination();
         }

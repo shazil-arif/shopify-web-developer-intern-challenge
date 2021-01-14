@@ -35,7 +35,7 @@ function loadPreviousNominationsFromLocalStorage(){
 
 function deletePreviousNominationsInLocalStorage(){
     localStorage.removeItem(theShoppiesStorageId);
-    for(const key of Object.keys(localStorage)){ // NOTE: this MAY not work in some browsers
+    for(const key of Object.keys(localStorage)){ // NOTE: Object.keys may not work in some older browsers
         if(key.startsWith(theShoppiesSavedEntryId)){
             localStorage.removeItem(key);
         }

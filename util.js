@@ -16,3 +16,6 @@ HTMLButtonElement.prototype.enable = function(){
 HTMLButtonElement.prototype.disable = function(){
     this.disabled = true;
 }
+HTMLElement.prototype.setAutoWidth = function(){
+    this.style.width = 'auto';
+}

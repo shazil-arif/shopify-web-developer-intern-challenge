@@ -2,8 +2,12 @@ const movieResultsPerRow = 2;
 
 function listMovieSarchResults(movies){
   
-    document.getElementById('searchResultsContainer').show();
-    document.getElementById('resultsTitle').show();
+    let searchResultsContainer = document.getElementById('mainContainer');
+    const resultsTitle = document.getElementById('resultsTitle');
+    
+    searchResultsContainer.setAutoWidth();
+    searchResultsContainer.show();
+    resultsTitle.show();
 
     for(let i = 0; i < movies.length; i++){
         let currentRowNumber = i;

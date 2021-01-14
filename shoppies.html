@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="./nomination.css">
+    <link rel="stylesheet" href="./shoppies.css">
 </head>
 <body>
 
@@ -36,11 +36,8 @@
 
 
   <template id='nominatedMovieComponent'>
-    <li id='imdbId'> Movie Title (Year)    
-      <button>click me</button>   
-    </li> 
+    <li id='imdbId'> Movie Title (Year) </li> 
     <a id='imdbId-remove' class="btn btn-primary"><i class="fas fa-trash rightIconIndent"></i>Remove</a>  
-
   </template>
 
   <!-- end of templates -->
@@ -77,7 +74,7 @@
 
   </div>
   
-    <div class='parent main_container'>
+    <div class='parent' id='mainContainer'>
 
       <div id='nominationsCompleteNotice' class="modal hidden" tabindex="-1">
         <div class="modal-dialog">
@@ -116,6 +113,7 @@
         </div>
         <code id="enterTitleAlert">Enter a movie title!</code>
         <button type="button" id= 'searchBtn' class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+        <button type="button" id= 'restartBtn' class="btn btn-primary"><i class="fas fa-redo-alt"></i> Restart</button>
 
         <hr>
         <div id='resultsWaitingSpinner' class="spinner-border text-primary hidden" role="status">
@@ -175,6 +173,7 @@
 <script src='./shareable-links.js'></script>
 <script src='./search-result-UI.js'></script>
 <script src='./storage.js'></script>
+<script src='./util.js'></script>
 <script src='./main.js'></script>
 </body>
 </html>

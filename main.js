@@ -9,7 +9,9 @@ window.onload = function(){
     const spinner = document.getElementById('resultsWaitingSpinner');
     const nominationsCompleteModalButton = document.getElementById('nominationsCompleteModalCloseButton');
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
-    
+    const restartBtn = document.getElementById('restartBtn');
+
+    restartBtn.addEventListener('click', () => location.reload());
     
     const loadFromStorageModal = document.getElementById('loadFromStorageModal');
     const loadFromStorageDismissButton = document.getElementById('loadFromStorageDismissButton');

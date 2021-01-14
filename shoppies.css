@@ -1,10 +1,10 @@
 body{
     background-color: azure;
 }
-.main_container{
+#mainContainer{
   position: absolute;
-  width: auto;
-  height: 200px;
+  width: 500px;
+  /* height: 200px; */
   z-index: 15;
   top: 50%;
   left: 50%;
@@ -26,7 +26,6 @@ body{
   text-align: center;
 }
 .parent{
-    /* width:500px; */
     height:auto;
 }
 #enterTitleAlert{
