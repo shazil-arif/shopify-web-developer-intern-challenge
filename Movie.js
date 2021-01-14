@@ -26,6 +26,7 @@ Movie.prototype.displayAsSearchResult = function(searchResultNumber){
     let nominateBtn = node.querySelector('button');
 
     image.setAttribute('src', this.Poster);
+    image.setAttribute('alt', 'Image Failed to Load, try again later')
     details.innerText = `${this.Title} (${this.Year})`;
     nominateBtn.setAttribute('id', `${this.imdbID}-add`);
 

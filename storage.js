@@ -40,4 +40,7 @@ function deletePreviousNominationsInLocalStorage(){
             localStorage.removeItem(key);
         }
     }
+
+    const onStorageClearedSuccessBar = document.getElementById('onStorageClearedSuccess');
+    onStorageClearedSuccessBar.show();
 }
