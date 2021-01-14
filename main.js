@@ -11,7 +11,6 @@ window.onload = function(){
     const saveNominationToLocalStorageButton = document.getElementById('saveNominationToLocalStorageButton');
     const restartBtn = document.getElementById('restartBtn');
 
-    restartBtn.addEventListener('click', () => window.location.href = window.location.origin);
     
     const loadFromStorageModal = document.getElementById('loadFromStorageModal');
     const loadFromStorageDismissButton = document.getElementById('loadFromStorageDismissButton');
@@ -19,32 +18,49 @@ window.onload = function(){
     const deleteFromStorageButton = document.getElementById('deleteFromStorageButton');
 
 
+    // bunch of events binded to their corresponding buttons
+
+
+    // check if user is visiting with a shareable link so we can populate the nomination list
+    if(userIsVisitingWithShareableLink()){
+        parseMovieTitlesFromQueryParameters(); // get and show the movie titles in the shareable link/query parameters
+    }
+
+    // check if user have previously saved nominations and if so ask them if they want to load them
+    /**
+     *  a design choice here is that if a user is visiting using a shareable link, they are likely not interested in their 
+     * previously saved nominations hence we check if they are NOT visiting with some shareable link
+     */
+    if(previouslySavedNominationsExist() && !userIsVisitingWithShareableLink()) {
+        loadFromStorageModal.show();
+    }
+
+    // to reload the page
+    restartBtn.addEventListener('click', () => window.location.href = window.location.origin + '/shoppies.html');
+
+
+    // if user wants to clear previous storage
     deleteFromStorageButton.addEventListener('click', () => {
         deletePreviousNominationsInLocalStorage();
-        loadFromStorageModal.hide();
     });
+
+    // if user wants to dismiss their previous storage
     loadFromStorageDismissButton.addEventListener('click', () => loadFromStorageModal.hide());
 
+
+    // if user wants to load previously stored nominations
     loadFromStorageAcceptButton.addEventListener('click', () => {
         loadPreviousNominationsFromLocalStorage();
         loadFromStorageModal.hide();
     });
 
-    if(userIsVisitingWithShareableLink()){
-        parseMovieTitlesFromQueryParameters();
-    }
-
-    // a design choice here is that if a user is visiting using a shareable link, they are likely not interested in their previously saved nominations
-    if(previouslySavedNominationsExist() && !userIsVisitingWithShareableLink()) {
-        loadFromStorageModal.show();
-    }
-
-
+    // when user has selected 5 nominations
     nominationsCompleteModalButton.addEventListener('click', () => document.getElementById('nominationsCompleteNotice').hide())
 
+    // if user wants to save their nominations for next time
     saveNominationToLocalStorageButton.addEventListener('click', saveNominationToLocalStorage);
 
-    // this is so that we can hide the alert message incase it was previously shown
+    // this is so that we can hide the alert message incase it was previously shown, problem: will continously fire
     movieSeachNameInput.addEventListener('keyup', () => alertField.hide());
 
     // even to fire on search button click
@@ -54,10 +70,14 @@ window.onload = function(){
             alertField.show();
         }
         else{
-            // show spinner
+            // show spinner while waiting for API response
             spinner.show();
+
+            // get search field inputs
             const movieTitle = movieSeachNameInput.value;
             const movieTitleSearchResults = await fetchMovieFromAPI(movieTitle);
+
+            // stop showing spinner and display the results
             spinner.hide();
             searchResultsContainer.show();
             listMovieSarchResults(movieTitleSearchResults);

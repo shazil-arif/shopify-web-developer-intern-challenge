@@ -1,4 +1,4 @@
-// utilities
+// utilities to clean up code in other parts, help with readeability and define some common behaviors like enabling/disabling buttons, showing/hiding elements etc
 HTMLElement.prototype.inputIsEmpty = function(){
     return this.value.trim().length === 0;
 }

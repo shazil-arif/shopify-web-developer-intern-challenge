@@ -1,6 +1,8 @@
 # Shopify UX Developer Intern & Web Developer Intern Challenge - Summer 2021
 
 
+[Click here to see the website in action](https://inspiring-engelbart-c27715.netlify.app/shoppies.html)
+
 ## Search for movie titles and add your nominations
 [![Foo](./demo1.JPG)](./demo1.JPG)
 

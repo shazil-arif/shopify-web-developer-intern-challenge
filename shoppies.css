@@ -54,3 +54,6 @@ i{
 .rightIconIndent{
     margin-right: 5px;
 }
+#onStorageClearedSuccessBar{
+    color:green;
+}

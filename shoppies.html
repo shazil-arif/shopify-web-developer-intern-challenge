@@ -12,6 +12,8 @@
 <body>
 
   <!-- some templates -->
+
+  <!-- reusable card view component -->
   <template id='cardViewComponent'>
     <div id ="cardView" class="card" style="width: 18rem;">
       <img id='moviePoster' src="..." class="card-img-top" alt="...">
@@ -30,11 +32,13 @@
     </style>
   </template>
 
+  <!-- card view row component -->
   <template id='cardViewRowComponent'>
     <div class="row"></div>
   </template>
 
 
+  <!-- reusable component to display a nominated title with movie info and a remove button -->
   <template id='nominatedMovieComponent'>
     <li id='imdbId'> Movie Title (Year) </li> 
     <a id='imdbId-remove' class="btn btn-primary"><i class="fas fa-trash rightIconIndent"></i>Remove</a>  
@@ -53,7 +57,7 @@
         <div class="modal-body">
           <p>We found previously saved nominations from your last visit</p>
           <p>Would you like to load these?</p>
-          <p id='onStorageClearedSuccessBar' class='hidden leftIndent'><i class="fas fa-check-circle leftIndent"></i>Cleared Storage. Click Dismiss</p>
+          <p id='onStorageClearedSuccessBar' class='hidden leftIndent'><i class="fas fa-check-circle leftIndent"></i> Cleared Storage. Click Dismiss</p>
         </div>
         <div class="modal-footer">
           <button id='deleteFromStorageButton' type="button" class="btn btn-danger" data-bs-dismiss="modal">Clear Storage <i class="fas fa-trash leftIndent"></i> </button>
